@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="dark light">
+<title>Panel IT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='0' fill='%23e84e1b'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-size='20' fill='%23fff'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css?v=20261103.5">
+<script src="js/menu-inicial.js?v=20261103.4"></script>
+</head>
+<body>
+
+<!-- ============ Cargando ============ -->
+<section class="pantalla" id="pantalla-carga">
+  <p class="cargando">Cargando…</p>
+</section>
+
+<!-- ============ Login ============ -->
+<section class="pantalla" id="pantalla-login" hidden>
+  <div class="tarjeta">
+    <header class="marca">
+      <span class="isotipo" aria-hidden="true">C</span>
+      <span><span class="titulo">Panel IT</span><span class="sub">Cindy Mayorista · Sistemas</span></span>
+    </header>
+    <form id="form-login" autocomplete="on">
+      <label for="login-usuario">Usuario</label>
+      <input id="login-usuario" name="username" autocomplete="username" required autofocus>
+      <label for="login-password">Contraseña</label>
+      <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+      <button class="btn" id="login-btn" type="submit">Ingresar</button>
+      <div class="mensaje-error" id="login-error" role="alert"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ App ============ -->
+<div class="app" id="app" hidden>
+  <nav class="lateral" id="lateral" aria-label="Secciones">
+    <div class="lateral-cab">
+      <div class="marca"><span class="isotipo" aria-hidden="true">C</span><span><span class="titulo">Panel IT</span><span class="sub">Cindy Mayorista</span></span></div>
+    </div>
+    <div class="lateral-scroll">
+      <a class="item" href="#tablero" data-vista="tablero"><i data-ico="tablero"></i><span>Tablero</span></a>
+      <a class="item" href="#equipos" data-vista="equipos"><i data-ico="equipo"></i><span>Equipos</span></a>
+      <a class="item" href="#servidor" data-vista="servidor"><i data-ico="servidor"></i><span>Conexión al servidor</span></a>
+      <a class="item" href="#pendientes" data-vista="pendientes"><i data-ico="tareas"></i><span>Pendientes</span><span class="insignia" id="nav-pend-n" hidden></span></a>
+      <div class="lateral-titulo"><span>Páginas</span><button type="button" class="btn-ico" id="arbol-nueva" title="Nueva página" data-puede-editar><i data-ico="mas"></i></button></div>
+      <ul class="arbol" id="arbol"></ul>
+      <div id="arbol-pie"></div>
+      <div class="lateral-titulo" data-solo-admin><span>Administración</span></div>
+      <a class="item" href="#usuarios" data-vista="usuarios" data-solo-admin><i data-ico="usuarios"></i><span>Usuarios del panel</span></a>
+      <a class="item" href="#actividad" data-vista="actividad" data-solo-admin><i data-ico="actividad"></i><span>Actividad</span></a>
+    </div>
+    <div class="lateral-pie">
+      <div class="quien"><span id="usuario-nombre"></span><span class="rol" id="usuario-rol"></span></div>
+      <button class="btn-texto" id="btn-tema" type="button"><i data-ico="pantalla" id="ico-tema"></i><span id="txt-tema">Tema</span></button>
+      <button class="btn-texto" id="cambiar-password" type="button"><i data-ico="llave"></i>Mi contraseña</button>
+      <button class="btn-texto" id="salir" type="button"><i data-ico="salir"></i>Salir</button>
+    </div>
+  </nav>
+  <div class="velo-menu" id="velo-menu" hidden></div>
+
+  <header class="barra">
+    <button class="btn-menu" id="btn-menu" type="button" aria-controls="lateral" aria-expanded="true"><i data-ico="menu"></i></button>
+    <nav class="ruta" id="ruta" aria-label="Ubicación"></nav>
+    <span class="estado-guardado" id="estado-guardado" aria-live="polite"></span>
+  </header>
+
+  <main class="contenido">
+
+    <!-- Tablero -->
+    <section id="vista-tablero" data-seccion hidden>
+      <div class="vista-head"><div><h1>Tablero</h1><p class="sub">Estado de los equipos y lo que conviene revisar.</p></div></div>
+      <div class="kpis" id="tablero-kpis"></div>
+      <div class="columnas">
+        <div class="caja"><h2>Para revisar</h2><ul class="lista-simple revisar" id="tablero-revisar"></ul></div>
+        <div>
+          <div class="caja"><h2>Equipos activos por sucursal</h2><ul class="barras" id="tablero-sucursales"></ul></div>
+          <div class="caja"><h2>Qué sigue</h2><ul class="lista-simple" id="tablero-pendientes"></ul><p class="hint"><a class="link" href="#pendientes">Ver todos los pendientes</a></p></div>
+          <div class="caja"><h2>Páginas editadas hace poco</h2><ul class="lista-simple" id="tablero-paginas"></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Equipos -->
+    <section id="vista-equipos" data-seccion hidden>
+      <div class="vista-head">
+        <div><h1>Equipos</h1><p class="sub" id="equipos-resumen"></p></div>
+        <div class="controles">
+          <button class="btn-sec" id="equipos-csv" type="button"><i data-ico="descargar"></i>CSV</button>
+          <button class="btn-sec primario" id="equipos-nuevo" type="button" data-puede-editar><i data-ico="mas"></i>Nuevo equipo</button>
+        </div>
+      </div>
+      <div class="caja">
+        <div class="filtros">
+          <div class="buscar-wrap" style="flex:1; min-width:200px"><label for="eq-buscar">Buscar</label><i data-ico="buscar" class="ico"></i><input id="eq-buscar" type="search" placeholder="Equipo, persona, usuario, ID…"></div>
+          <div><label for="eq-sucursal">Sucursal</label><select id="eq-sucursal"></select></div>
+          <div><label for="eq-tipo">Tipo</label><select id="eq-tipo"></select></div>
+          <div><label for="eq-estado">Estado</label><select id="eq-estado">
+            <option value="vigentes">Activos y en reparación</option><option value="activo">Solo activos</option>
+            <option value="reparacion">En reparación</option><option value="baja">De baja</option><option value="">Todos</option></select></div>
+          <label class="check" style="margin-bottom:9px"><input type="checkbox" id="eq-fact"> Solo los que facturan</label>
+        </div>
+        <div class="tabla-wrap"><table class="tabla grilla con-nombre" id="tabla-equipos"></table></div>
+      </div>
+    </section>
+
+    <!-- Conexión al servidor -->
+    <section id="vista-servidor" data-seccion hidden>
+      <div class="vista-head">
+        <div><h1>Conexión al servidor</h1><p class="sub">Cómo llegan los equipos a Manager y qué usuario usa cada uno.</p></div>
+      </div>
+      <div class="caja"><h2>Esquema</h2><div class="esquema" id="esquema"></div></div>
+      <div class="caja" id="guia-caja"></div>
+      <div class="caja">
+        <h2>Usuarios del servidor</h2>
+        <div class="filtros">
+          <div class="buscar-wrap" style="flex:1; min-width:180px"><label for="us-buscar">Buscar</label><i data-ico="buscar" class="ico"></i><input id="us-buscar" type="search" placeholder="Usuario o equipo…"></div>
+          <div><label for="us-filtro">Mostrar</label><select id="us-filtro"><option value="">Todos</option><option value="libre">Libres</option><option value="compartido">Usados por más de un equipo</option><option value="fuera">Asignados pero no están en la lista</option></select></div>
+          <button class="btn-sec primario" id="us-nuevo" type="button" data-puede-editar style="margin-bottom:1px"><i data-ico="mas"></i>Agregar usuario</button>
+        </div>
+        <div class="tabla-wrap"><table class="tabla grilla" id="tabla-usuarios-servidor"></table></div>
+      </div>
+    </section>
+
+    <!-- Pendientes de tecnología -->
+    <section id="vista-pendientes" data-seccion hidden>
+      <div class="vista-head">
+        <div><h1>Pendientes</h1><p class="sub" id="pend-resumen">Lo que falta hacer en tecnología. Empezá por arriba.</p></div>
+        <div class="controles"><button class="btn-sec primario" id="pe-nuevo" type="button" data-puede-editar><i data-ico="mas"></i>Nuevo pendiente</button></div>
+      </div>
+      <form class="pend-rapido" id="form-rapido" data-puede-editar autocomplete="off">
+        <input id="pe-rapido" maxlength="200" placeholder="Agregar un pendiente y apretar Enter…" aria-label="Nuevo pendiente">
+        <select id="pe-rapido-prio" aria-label="Prioridad"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select>
+        <button class="btn-sec" type="submit"><i data-ico="mas"></i>Agregar</button>
+      </form>
+      <div class="filtros">
+        <div class="buscar-wrap" style="flex:1; min-width:200px"><label for="pe-buscar">Buscar</label><i data-ico="buscar" class="ico"></i><input id="pe-buscar" type="search" placeholder="Título, detalle o responsable…"></div>
+        <div><label for="pe-resp">Responsable</label><select id="pe-resp"><option value="">Todos</option></select></div>
+      </div>
+      <div id="pend-listas"></div>
+    </section>
+
+    <!-- Páginas (índice y editor) -->
+    <section id="vista-pagina" data-seccion hidden></section>
+
+    <!-- Usuarios del panel (admin) -->
+    <section id="vista-usuarios" data-seccion hidden>
+      <div class="vista-head">
+        <div><h1>Usuarios del panel</h1><p class="sub">Quién puede entrar y qué puede hacer.</p></div>
+        <div class="controles"><button class="btn-sec primario" id="usuarios-nuevo" type="button"><i data-ico="mas"></i>Nuevo usuario</button></div>
+      </div>
+      <div class="caja">
+        <div class="tabla-wrap"><table class="tabla grilla" id="tabla-usuarios"></table></div>
+        <p class="hint"><strong>Admin:</strong> todo, incluidas las contraseñas de los equipos y la actividad. <strong>Técnico:</strong> carga y edita equipos, usuarios del servidor y páginas. <strong>Consulta:</strong> solo mira.</p>
+      </div>
+    </section>
+
+    <!-- Actividad (admin) -->
+    <section id="vista-actividad" data-seccion hidden>
+      <div class="vista-head">
+        <div><h1>Actividad</h1><p class="sub">Últimos 300 movimientos: ingresos, cambios y contraseñas mostradas.</p></div>
+        <div class="controles"><label class="check" style="margin:0"><input type="checkbox" id="act-pass"> Solo contraseñas</label></div>
+      </div>
+      <div class="caja"><div class="tabla-wrap"><table class="tabla grilla" id="tabla-actividad"></table></div></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ Diálogos ============ -->
+<dialog class="dlg ancho" id="dlg-ficha">
+  <div class="dlg-head"><h3 id="ficha-titulo"></h3><button class="btn-cerrar" type="button" data-cerrar aria-label="Cerrar"><i data-ico="cerrar"></i></button></div>
+  <div class="dlg-body">
+    <div class="pestanas" role="tablist">
+      <button type="button" role="tab" data-pestana="datos" aria-selected="true">Datos</button>
+      <button type="button" role="tab" data-pestana="accesos" aria-selected="false">Accesos</button>
+      <button type="button" role="tab" data-pestana="paginas" aria-selected="false">Páginas</button>
+    </div>
+    <div id="ficha-contenido"></div>
+  </div>
+</dialog>
+
+<dialog class="dlg ancho" id="dlg-equipo">
+  <form id="form-equipo" novalidate>
+    <div class="dlg-head"><h3 id="equipo-titulo">Equipo</h3><button class="btn-cerrar" type="button" data-cerrar aria-label="Cerrar"><i data-ico="cerrar"></i></button></div>
+    <div class="dlg-body">
+      <div class="form-grid">
+        <div class="full"><label for="f-descripcion">Descripción *</label><input id="f-descripcion" name="descripcion" maxlength="120" required placeholder="Ej.: PC Caja Greisy"></div>
+        <div><label for="f-tipo">Tipo</label><select id="f-tipo" name="tipo"></select></div>
+        <div><label for="f-sucursal">Sucursal</label><input id="f-sucursal" name="sucursal" list="lista-sucursales" maxlength="80"></div>
+        <div><label for="f-nombreEquipo">Nombre del equipo en Windows</label><input id="f-nombreEquipo" name="nombreEquipo" maxlength="80" placeholder="DESKTOP-…"></div>
+        <div><label for="f-usuarioHabitual">Usuario habitual</label><input id="f-usuarioHabitual" name="usuarioHabitual" maxlength="120"></div>
+        <div><label for="f-usuarioServidor">Usuario del servidor</label><input id="f-usuarioServidor" name="usuarioServidor" list="lista-usuarios-servidor" maxlength="80"><div class="hint" id="f-us-ayuda"></div></div>
+        <div><label for="f-estado">Estado</label><select id="f-estado" name="estado"><option value="activo">Activo</option><option value="reparacion">En reparación</option><option value="baja">De baja</option></select></div>
+        <div><label for="f-teamviewerId">ID TeamViewer</label><input id="f-teamviewerId" name="teamviewerId" maxlength="30" inputmode="numeric"></div>
+        <div><label for="f-anydeskId">ID AnyDesk</label><input id="f-anydeskId" name="anydeskId" maxlength="30" inputmode="numeric"></div>
+        <div class="full"><label class="check"><input type="checkbox" id="f-facturacion" name="facturacion"> Factura (es caja)</label></div>
+        <div><label for="f-puntoVentaManager">Punto de venta Manager</label><input id="f-puntoVentaManager" name="puntoVentaManager" maxlength="20"></div>
+        <div><label for="f-puntoVentaMagnus">Punto de venta Magnus</label><input id="f-puntoVentaMagnus" name="puntoVentaMagnus" maxlength="20"></div>
+        <div><label for="f-ip">IP</label><input id="f-ip" name="ip" maxlength="45" placeholder="192.168.0.…"></div>
+        <div><label for="f-etiquetas">Etiquetas</label><input id="f-etiquetas" name="etiquetas" maxlength="300" placeholder="Separadas por coma"></div>
+        <div class="full"><label for="f-observaciones">Observaciones</label><textarea id="f-observaciones" name="observaciones" maxlength="2000"></textarea></div>
+      </div>
+      <div class="mensaje-error" id="equipo-error" role="alert"></div>
+      <div class="dlg-pie"><button class="btn-sec" type="button" data-cerrar>Cancelar</button><button class="btn-sec primario" type="submit">Guardar</button></div>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dlg" id="dlg-credencial">
+  <form id="form-credencial" novalidate>
+    <div class="dlg-head"><h3 id="credencial-titulo">Contraseña</h3><button class="btn-cerrar" type="button" data-cerrar aria-label="Cerrar"><i data-ico="cerrar"></i></button></div>
+    <div class="dlg-body">
+      <label for="c-tipo">De qué es</label>
+      <select id="c-tipo" name="tipo"><option value="teamviewer">TeamViewer</option><option value="anydesk">AnyDesk</option><option value="windows">Windows (usuario local)</option><option value="servidor">Usuario del servidor</option><option value="otra">Otra</option></select>
+      <label for="c-usuario">Usuario (si corresponde)</label>
+      <input id="c-usuario" name="usuario" maxlength="120" autocomplete="off">
+      <label for="c-valor">Contraseña</label>
+      <input id="c-valor" name="valor" type="password" maxlength="300" autocomplete="new-password">
+      <div class="hint" id="c-ayuda"></div>
+      <label class="check"><input type="checkbox" id="c-ver"> Ver lo que escribo</label>
+      <div class="mensaje-error" id="credencial-error" role="alert"></div>
+      <div class="dlg-pie"><button class="btn-sec" type="button" data-cerrar>Cancelar</button><button class="btn-sec primario" type="submit">Guardar</button></div>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dlg" id="dlg-usuario">
+  <form id="form-usuario" novalidate>
+    <div class="dlg-head"><h3 id="usuario-titulo">Usuario</h3><button class="btn-cerrar" type="button" data-cerrar aria-label="Cerrar"><i data-ico="cerrar"></i></button></div>
+    <div class="dlg-body">
+      <label for="u-usuario">Usuario (para entrar)</label>
+      <input id="u-usuario" name="usuario" maxlength="60" autocomplete="off" pattern="[a-z0-9._-]+" placeholder="ej.: luca">
+      <label for="u-nombre">Nombre</label>
+      <input id="u-nombre" name="nombre" maxlength="80" autocomplete="off">
+      <label for="u-rol">Rol</label>
+      <select id="u-rol" name="rol"><option value="consulta">Consulta</option><option value="tecnico">Técnico</option><option value="admin">Admin</option></select>
+      <label for="u-password" id="u-password-label">Contraseña</label>
+      <input id="u-password" name="password" type="password" minlength="10" maxlength="200" autocomplete="new-password">
+      <div class="hint">Mínimo 10 caracteres.</div>
+      <label class="check" id="u-activo-wrap"><input type="checkbox" id="u-activo" name="activo" checked> Activo (puede entrar)</label>
+      <div class="mensaje-error" id="usuario-error" role="alert"></div>
+      <div class="dlg-pie"><button class="btn-sec" type="button" data-cerrar>Cancelar</button><button class="btn-sec primario" type="submit">Guardar</button></div>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dlg" id="dlg-pendiente">
+  <form id="form-pendiente" novalidate>
+    <div class="dlg-head"><h3 id="pendiente-titulo">Pendiente</h3><button class="btn-cerrar" type="button" data-cerrar aria-label="Cerrar"><i data-ico="cerrar"></i></button></div>
+    <div class="dlg-body">
+      <label for="pe-titulo">Qué hay que hacer</label>
+      <input id="pe-titulo" maxlength="200" required>
+      <label for="pe-detalle">Detalle (opcional)</label>
+      <textarea id="pe-detalle" maxlength="3000" placeholder="Qué falta, qué se probó, a quién preguntar…"></textarea>
+      <div class="row">
+        <div><label for="pe-estado">Estado</label><select id="pe-estado"><option value="pendiente">Pendiente</option><option value="en_curso">En curso</option><option value="hecho">Hecho</option></select></div>
+        <div><label for="pe-prioridad">Prioridad</label><select id="pe-prioridad"><option value="alta">Alta</option><option value="media">Media</option><option value="baja">Baja</option></select></div>
+      </div>
+      <label for="pe-responsable">Responsable</label>
+      <input id="pe-responsable" maxlength="80" list="lista-responsables" placeholder="Quién lo lleva">
+      <div class="row">
+        <div><label for="pe-equipo">Equipo</label><select id="pe-equipo"></select></div>
+        <div><label for="pe-pagina">Página con más información</label><select id="pe-pagina"></select></div>
+      </div>
+      <div class="mensaje-error" id="pendiente-error" role="alert"></div>
+      <div class="dlg-pie"><button class="link peligro" type="button" id="pendiente-borrar" style="margin-right:auto">Borrar</button><button class="btn-sec" type="button" data-cerrar>Cerrar</button><button class="btn-sec primario" type="submit" id="pendiente-guardar">Guardar</button></div>
+    </div>
+  </form>
+</dialog>
+
+<input type="file" id="archivo-img" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+<datalist id="lista-sucursales"></datalist>
+<datalist id="lista-usuarios-servidor"></datalist>
+<datalist id="lista-responsables"></datalist>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="js/utils.js?v=20261103.4"></script>
+<script src="js/api.js?v=20261103.4"></script>
+<script src="js/vistas/acceso.js?v=20261103.4"></script>
+<script src="js/vistas/tablero.js?v=20261103.4"></script>
+<script src="js/vistas/equipos.js?v=20261103.4"></script>
+<script src="js/vistas/ficha.js?v=20261103.4"></script>
+<script src="js/vistas/servidor.js?v=20261103.4"></script>
+<script src="js/vistas/pendientes.js?v=20261103.4"></script>
+<script src="js/vistas/paginas.js?v=20261103.4"></script>
+<script src="js/vistas/usuarios.js?v=20261103.4"></script>
+<script src="js/vistas/actividad.js?v=20261103.4"></script>
+<script src="js/main.js?v=20261103.4"></script>
+</body>
+</html>
